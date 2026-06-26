@@ -1,7 +1,7 @@
 import './globals.css';
 
 export const metadata = {
-  title: 'Blob Storage Web Copy',
+  title: 'FlahyCDS',
   description: 'Copied Next.js app for Azure Blob Storage'
 };
 
