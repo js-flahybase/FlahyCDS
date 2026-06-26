@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply box-border;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply min-h-screen bg-slate-50 text-slate-900 antialiased;
+    background:
+      radial-gradient(circle at top left, rgba(148, 163, 184, 0.12), transparent 24%),
+      linear-gradient(180deg, #fafafa 0%, #f8fafc 100%);
+  }
+
+  button,
+  input,
+  select {
+    @apply focus:outline-none;
+  }
+}
