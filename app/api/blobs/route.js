@@ -29,6 +29,12 @@ async function ensureFolderRegistry() {
   );
 }
 
+async function ensureFolderWorkflowsStatus() {
+  await query(
+    `alter table folder_workflows add column if not exists status text not null default 'processing'`
+  );
+}
+
 function isDirectChildFolder(parentPrefix, folderPath) {
   const normalizedParent = normalizePrefix(parentPrefix);
   const normalizedFolder = normalizePrefix(folderPath);
@@ -129,7 +135,8 @@ export async function GET(request) {
           return {
             name: folder,
             workflowName: workflow.workflowName,
-            selectedByUsername: workflow.selectedByUsername
+            selectedByUsername: workflow.selectedByUsername,
+            status: workflow.status
           };
         })
       );
@@ -177,7 +184,8 @@ export async function GET(request) {
         return {
           name: folder,
           workflowName: workflow.workflowName,
-          selectedByUsername: workflow.selectedByUsername
+          selectedByUsername: workflow.selectedByUsername,
+          status: workflow.status
         };
       })
     );
@@ -199,8 +207,9 @@ function normalizeFolderName(folderName) {
 }
 
 async function getFolderWorkflow(folderPrefix) {
+  await ensureFolderWorkflowsStatus();
   const result = await query(
-    `select workflow_name, selected_by_username
+    `select workflow_name, selected_by_username, status
      from folder_workflows
      where folder_path = $1
      limit 1`,
@@ -208,7 +217,8 @@ async function getFolderWorkflow(folderPrefix) {
   );
   return {
     workflowName: result.rows[0]?.workflow_name || '',
-    selectedByUsername: result.rows[0]?.selected_by_username || ''
+    selectedByUsername: result.rows[0]?.selected_by_username || '',
+    status: result.rows[0]?.status || ''
   };
 }
 
@@ -291,20 +301,38 @@ export async function PATCH(request) {
 
     const body = await request.json();
     const name = String(body?.name || '').trim();
-    const workflowId = String(body?.workflowId || '').trim();
-    const targetType = String(body?.targetType || 'folder').trim();
+    const action = String(body?.action || 'set-workflow').trim();
     const { isAdmin, allowedPrefixes, session } = auth;
 
     if (!name) {
       return NextResponse.json({ error: 'Missing blob name' }, { status: 400 });
     }
 
-    if (targetType === 'folder' && !canAssignWorkflowToFolder(name)) {
-      return NextResponse.json({ error: 'Workflow can only be assigned to sample folders inside raw_reads batches' }, { status: 400 });
-    }
-
     if (!isAdmin && !isBlobPathAllowed(name, allowedPrefixes)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
+    if (action === 'set-status') {
+      if (!isAdmin) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      }
+      const status = String(body?.status || '').trim();
+      if (!['processing', 'complete'].includes(status)) {
+        return NextResponse.json({ error: 'Invalid status. Use processing or complete' }, { status: 400 });
+      }
+      await ensureFolderWorkflowsStatus();
+      await query(
+        `update folder_workflows set status = $1 where folder_path = $2`,
+        [status, normalizePrefix(name)]
+      );
+      return NextResponse.json({ ok: true, name, status });
+    }
+
+    const workflowId = String(body?.workflowId || '').trim();
+    const targetType = String(body?.targetType || 'folder').trim();
+
+    if (targetType === 'folder' && !canAssignWorkflowToFolder(name)) {
+      return NextResponse.json({ error: 'Workflow can only be assigned to sample folders inside raw_reads batches' }, { status: 400 });
     }
 
     const isValidWorkflow = WORKFLOWS.some((workflow) => workflow.id === workflowId);
@@ -317,9 +345,10 @@ export async function PATCH(request) {
     if (workflowId === 'none') {
       await query('delete from folder_workflows where folder_path = $1', [normalizePrefix(name)]);
     } else {
+      await ensureFolderWorkflowsStatus();
       await query(
-        `insert into folder_workflows (folder_path, workflow_name, selected_by_user_id, selected_by_username)
-         values ($1, $2, $3, $4)
+        `insert into folder_workflows (folder_path, workflow_name, selected_by_user_id, selected_by_username, status)
+         values ($1, $2, $3, $4, 'processing')
          on conflict (folder_path)
          do update set
            workflow_name = excluded.workflow_name,

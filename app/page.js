@@ -60,6 +60,7 @@ export default function Home() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [workflowModal, setWorkflowModal] = useState({ open: false, folderName: '', workflowId: 'none' });
   const [savingWorkflow, setSavingWorkflow] = useState(false);
+  const [togglingStatus, setTogglingStatus] = useState({});
   const [status, setStatus] = useState({ text: '', error: false });
   const [preview, setPreview] = useState({ open: false, name: '', content: '', meta: '', note: '' });
   const statusClasses = status.error
@@ -313,6 +314,27 @@ export default function Home() {
     }
   }
 
+  async function toggleFolderStatus(row) {
+    const nextStatus = row.status === 'complete' ? 'processing' : 'complete';
+    setTogglingStatus((prev) => ({ ...prev, [row.fullPath]: true }));
+    try {
+      const res = await fetch('/api/blobs', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'set-status', name: row.fullPath, status: nextStatus })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to update status');
+      setFolders((current) =>
+        current.map((f) => (f.name === row.fullPath ? { ...f, status: nextStatus } : f))
+      );
+    } catch (error) {
+      setStatus({ text: error.message, error: true });
+    } finally {
+      setTogglingStatus((prev) => ({ ...prev, [row.fullPath]: false }));
+    }
+  }
+
   const rows = useMemo(() => {
     const items = [
       ...folders.map((path) => ({
@@ -323,7 +345,8 @@ export default function Home() {
         blobType: '',
         size: '',
         workflowName: path.workflowName || '',
-        selectedByUsername: path.selectedByUsername || ''
+        selectedByUsername: path.selectedByUsername || '',
+        status: path.status || ''
       })),
       ...files.map((file) => ({
         kind: 'file',
@@ -538,6 +561,7 @@ export default function Home() {
                 <th className="px-4 py-3">Blob type</th>
                 <th className="px-4 py-3">Size</th>
                 <th className="px-4 py-3">Workflow</th>
+                <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3">Action</th>
               </tr>
             </thead>
@@ -545,6 +569,7 @@ export default function Home() {
               {currentPrefix ? (
                 <tr className="cursor-pointer transition hover:bg-slate-50" onClick={() => loadDirectory(parentPrefix(currentPrefix))}>
                   <td className="px-4 py-3 font-semibold text-brandDeep">[..]</td>
+                  <td className="px-4 py-3" />
                   <td className="px-4 py-3" />
                   <td className="px-4 py-3" />
                   <td className="px-4 py-3" />
@@ -572,12 +597,49 @@ export default function Home() {
                       : ''}
                   </td>
                   <td className="px-4 py-3">
+                    {row.kind === 'folder' && canSelectWorkflowForFolder(row.fullPath) && row.workflowName ? (
+                      authState.user?.userType === 'admin' ? (
+                        <button
+                          type="button"
+                          disabled={togglingStatus[row.fullPath]}
+                          onClick={() => toggleFolderStatus(row)}
+                          className={
+                            row.status === 'complete'
+                              ? 'inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 px-3 py-1.5 text-sm font-semibold text-emerald-700 border border-emerald-200 transition hover:bg-emerald-100 disabled:opacity-50'
+                              : 'inline-flex items-center gap-1.5 rounded-xl bg-amber-50 px-3 py-1.5 text-sm font-semibold text-amber-700 border border-amber-200 transition hover:bg-amber-100 disabled:opacity-50'
+                          }
+                        >
+                          {row.status === 'complete' ? (
+                            <span className="inline-block h-2 w-2 rounded-full bg-emerald-400" />
+                          ) : (
+                            <span className="inline-block h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
+                          )}
+                          {togglingStatus[row.fullPath] ? 'Saving...' : row.status === 'complete' ? 'Complete' : 'Processing'}
+                        </button>
+                      ) : (
+                        <span
+                          className={
+                            row.status === 'complete'
+                              ? 'inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 px-3 py-1.5 text-sm font-semibold text-emerald-700 border border-emerald-200'
+                              : 'inline-flex items-center gap-1.5 rounded-xl bg-amber-50 px-3 py-1.5 text-sm font-semibold text-amber-700 border border-amber-200'
+                          }
+                        >
+                          {row.status === 'complete' ? (
+                            <span className="inline-block h-2 w-2 rounded-full bg-emerald-400" />
+                          ) : (
+                            <span className="inline-block h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
+                          )}
+                          {row.status === 'complete' ? 'Complete' : 'Processing'}
+                        </span>
+                      )
+                    ) : (
+                      ''
+                    )}
+                  </td>
+                  <td className="px-4 py-3">
                     {row.kind === 'folder' && canSelectWorkflowForFolder(row.fullPath) ? (
                       row.workflowName && authState.user?.userType !== 'admin' ? (
-                        <span className="inline-flex items-center gap-1.5 rounded-xl bg-amber-50 px-3 py-1.5 text-sm font-semibold text-amber-700 border border-amber-200">
-                          <span className="inline-block h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
-                          In Process
-                        </span>
+                        ''
                       ) : (
                         <button
                           type="button"
