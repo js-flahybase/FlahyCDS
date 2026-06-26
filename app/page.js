@@ -573,19 +573,26 @@ export default function Home() {
                   </td>
                   <td className="px-4 py-3">
                     {row.kind === 'folder' && canSelectWorkflowForFolder(row.fullPath) ? (
-                      <button
-                        type="button"
-                        className="h-10 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink transition hover:bg-slate-50"
-                        onClick={() =>
-                          setWorkflowModal({
-                            open: true,
-                            folderName: row.fullPath,
-                            workflowId: WORKFLOWS.find((workflow) => workflow.label === row.workflowName)?.id || 'none'
-                          })
-                        }
-                      >
-                        Select workflow
-                      </button>
+                      row.workflowName && authState.user?.userType !== 'admin' ? (
+                        <span className="inline-flex items-center gap-1.5 rounded-xl bg-amber-50 px-3 py-1.5 text-sm font-semibold text-amber-700 border border-amber-200">
+                          <span className="inline-block h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
+                          In Process
+                        </span>
+                      ) : (
+                        <button
+                          type="button"
+                          className="h-10 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink transition hover:bg-slate-50"
+                          onClick={() =>
+                            setWorkflowModal({
+                              open: true,
+                              folderName: row.fullPath,
+                              workflowId: WORKFLOWS.find((workflow) => workflow.label === row.workflowName)?.id || 'none'
+                            })
+                          }
+                        >
+                          {row.workflowName ? 'Change workflow' : 'Select workflow'}
+                        </button>
+                      )
                     ) : (
                       ''
                     )}
