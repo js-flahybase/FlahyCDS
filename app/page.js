@@ -585,7 +585,7 @@ export default function Home() {
                     {row.kind === 'folder' ? `📁 ${row.name}` : row.name}
                   </td>
                   <td className="px-4 py-3 text-mist">{row.lastModified}</td>
-                  <td className="px-4 py-3 text-mist">{row.blobType}</td>
+  
                   <td className="px-4 py-3 text-mist">{row.size}</td>
                   <td className="px-4 py-3 text-mist">
                     {row.kind === 'folder' && canSelectWorkflowForFolder(row.fullPath)
