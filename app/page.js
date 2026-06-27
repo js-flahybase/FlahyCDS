@@ -553,7 +553,7 @@ export default function Home() {
 
       <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white">
         <div className="overflow-x-auto">
-          <table className="min-w-full border-collapse text-left text-sm">
+          <table className="w-full min-w-full border-collapse text-left text-sm">
             <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-[0.08em] text-mist">
               <tr>
                 <th className="px-4 py-3">Name</th>
