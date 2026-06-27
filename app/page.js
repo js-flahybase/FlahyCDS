@@ -424,7 +424,7 @@ export default function Home() {
       <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
       <div className="mb-5 flex items-start justify-between gap-4">
         <div>
-          <h1 className="m-0 text-3xl font-semibold tracking-tight text-ink md:text-4xl">Container</h1>
+          <h1 className="m-0 text-3xl font-semibold tracking-tight text-ink md:text-4xl">Welcome</h1>
           <p className="mt-1 text-sm text-mist">Manage folders, uploads, and workflows.</p>
         </div>
         <div className="relative flex items-center gap-2 text-sm">
@@ -558,7 +558,6 @@ export default function Home() {
               <tr>
                 <th className="px-4 py-3">Name</th>
                 <th className="px-4 py-3">Last modified</th>
-                <th className="px-4 py-3">Blob type</th>
                 <th className="px-4 py-3">Size</th>
                 <th className="px-4 py-3">Workflow</th>
                 <th className="px-4 py-3">Status</th>
@@ -569,7 +568,6 @@ export default function Home() {
               {currentPrefix ? (
                 <tr className="cursor-pointer transition hover:bg-slate-50" onClick={() => loadDirectory(parentPrefix(currentPrefix))}>
                   <td className="px-4 py-3 font-semibold text-brandDeep">[..]</td>
-                  <td className="px-4 py-3" />
                   <td className="px-4 py-3" />
                   <td className="px-4 py-3" />
                   <td className="px-4 py-3" />
