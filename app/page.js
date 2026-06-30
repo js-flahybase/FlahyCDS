@@ -153,12 +153,12 @@ export default function Home() {
       current.map((item) =>
         item.id === fileId
           ? {
-              ...item,
-              loaded: item.total || file.size || item.loaded,
-              progress: 100,
-              elapsedMs: Date.now() - startedAt,
-              status: 'done'
-            }
+            ...item,
+            loaded: item.total || file.size || item.loaded,
+            progress: 100,
+            elapsedMs: Date.now() - startedAt,
+            status: 'done'
+          }
           : item
       )
     );
@@ -292,10 +292,10 @@ export default function Home() {
         current.map((folder) =>
           folder.name === workflowModal.folderName
             ? {
-                ...folder,
-                workflowName: data.workflowName || '',
-                selectedByUsername: data.selectedByUsername || ''
-              }
+              ...folder,
+              workflowName: data.workflowName || '',
+              selectedByUsername: data.selectedByUsername || ''
+            }
             : folder
         )
       );
@@ -422,350 +422,347 @@ export default function Home() {
   return (
     <main className="mx-auto my-8 max-w-5xl px-4">
       <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
-      <div className="mb-5 flex items-start justify-between gap-4">
-        <div>
-          <h1 className="m-0 text-3xl font-semibold tracking-tight text-ink md:text-4xl">Welcome</h1>
-          <p className="mt-1 text-sm text-mist">Manage folders, uploads, and workflows.</p>
-        </div>
-        <div className="relative flex items-center gap-2 text-sm">
-          <button
-            type="button"
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-sm font-semibold text-white transition hover:bg-slate-800"
-            onClick={() => setShowUserMenu((current) => !current)}
-          >
-            {authState.user.username.charAt(0).toUpperCase()}
-          </button>
-          {showUserMenu ? (
-            <div className="absolute right-0 top-12 z-20 flex min-w-[170px] flex-col gap-2 rounded-2xl border border-slate-200 bg-white p-3 shadow-lg">
-              <div className="break-words text-sm font-semibold text-ink capitalize">{authState.user.username}</div>
-              <button
-                type="button"
-                className="h-10 rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white transition hover:bg-slate-800"
-                onClick={logout}
-              >
-                Logout
-              </button>
-            </div>
-          ) : null}
-        </div>
-      </div>
-
-      <div className="mb-5 flex flex-wrap items-center gap-1.5 text-sm">
-        {breadcrumbs.map((crumb, idx) => (
-          <button
-            key={crumb.prefix || 'root'}
-            className="rounded-xl px-2.5 py-1.5 font-medium text-slate-600 transition hover:bg-slate-100 hover:text-ink"
-            onClick={() => loadDirectory(crumb.prefix)}
-          >
-            {crumb.label}
-            {idx < breadcrumbs.length - 1 ? ' >' : ''}
-          </button>
-        ))}
-      </div>
-
-      <div className="mb-5 flex flex-wrap gap-3">
-        <button
-          className="flex min-h-20 min-w-[150px] flex-col items-center justify-center gap-1 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium text-ink transition hover:bg-slate-100"
-          type="button"
-          onClick={() => document.getElementById('file-upload-picker')?.click()}
-        >
-          <span className="text-3xl leading-none text-slate-700">+</span>
-          <span className="text-sm">Upload</span>
-        </button>
-        <button
-          className="flex min-h-20 min-w-[150px] flex-col items-center justify-center gap-1 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium text-ink transition hover:bg-slate-100"
-          type="button"
-          onClick={() => {
-            setFolderName('');
-            setShowFolderModal(true);
-          }}
-        >
-          <span className="text-3xl leading-none text-slate-700">+</span>
-          <span className="text-center text-sm">Add a directory</span>
-        </button>
-      </div>
-
-      <input
-        id="file-upload-picker"
-        type="file"
-        multiple
-        hidden
-        onChange={(e) => setFilesToUpload(Array.from(e.target.files || []))}
-      />
-
-      {filesToUpload.length ? (
-        <div className="mb-4 flex min-h-[42px] items-center gap-3 max-md:flex-col max-md:items-stretch">
-          <span className="flex min-h-[42px] flex-1 items-center rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm text-mist">
-            {filesToUpload.length === 1 ? filesToUpload[0].name : `${filesToUpload.length} files selected`}
-          </span>
-          <button
-            className="h-10 rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
-            type="button"
-            onClick={uploadFiles}
-            disabled={uploading}
-          >
-            {uploading ? 'Uploading...' : `Upload ${filesToUpload.length}`}
-          </button>
-        </div>
-      ) : null}
-
-      {uploadStats.length ? (
-        <div className="mb-3">
-          {uploadStats.map((item) => (
-            <div key={item.id} className="mb-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-              <div className="mb-2 flex justify-between gap-3 text-sm">
-                <span className="break-words font-semibold text-ink">{item.name}</span>
-                <span
-                  className={`capitalize ${
-                    item.status === 'done' ? 'text-emerald-700' : item.status === 'error' ? 'text-red-600' : 'text-slate-500'
-                  }`}
+        <div className="mb-5 flex items-start justify-between gap-4">
+          <div>
+            <h1 className="m-0 text-3xl font-semibold tracking-tight text-ink md:text-4xl">Welcome</h1>
+            <p className="mt-1 text-sm text-mist">Manage folders, uploads, and workflows.</p>
+          </div>
+          <div className="relative flex items-center gap-2 text-sm">
+            <button
+              type="button"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-sm font-semibold text-white transition hover:bg-slate-800"
+              onClick={() => setShowUserMenu((current) => !current)}
+            >
+              {authState.user.username.charAt(0).toUpperCase()}
+            </button>
+            {showUserMenu ? (
+              <div className="absolute right-0 top-12 z-20 flex min-w-[170px] flex-col gap-2 rounded-2xl border border-slate-200 bg-white p-3 shadow-lg">
+                <div className="break-words text-sm font-semibold text-ink capitalize">{authState.user.username}</div>
+                <button
+                  type="button"
+                  className="h-10 rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white transition hover:bg-slate-800"
+                  onClick={logout}
                 >
-                  {item.status}
-                </span>
+                  Logout
+                </button>
               </div>
-              <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-200">
-                <div
-                  className="h-full bg-slate-900 transition-all"
-                  style={{ width: `${Math.min(item.progress, 100)}%` }}
-                />
-              </div>
-              <div className="mt-2 flex flex-wrap gap-3 text-xs text-mist">
-                <span>{Math.round(item.progress)}%</span>
-                <span>{formatSize(item.loaded)} / {formatSize(item.total)}</span>
-                <span>{formatSize(item.speed)}/s</span>
-                <span>{formatDuration(item.elapsedMs)}</span>
-              </div>
-            </div>
+            ) : null}
+          </div>
+        </div>
+
+        <div className="mb-5 flex flex-wrap items-center gap-1.5 text-sm">
+          {breadcrumbs.map((crumb, idx) => (
+            <button
+              key={crumb.prefix || 'root'}
+              className="rounded-xl px-2.5 py-1.5 font-medium text-slate-600 transition hover:bg-slate-100 hover:text-ink"
+              onClick={() => loadDirectory(crumb.prefix)}
+            >
+              {crumb.label}
+              {idx < breadcrumbs.length - 1 ? ' >' : ''}
+            </button>
           ))}
         </div>
-      ) : null}
 
-      <div className="mb-4 flex items-center gap-3">
-        <input
-          className="h-11 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-base text-ink outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search blobs by prefix (case-sensitive)"
-        />
-      </div>
-
-      <p className="mb-3 text-sm text-mist">Showing {rows.length} item(s)</p>
-
-      <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-full border-collapse text-left text-sm">
-            <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-[0.08em] text-mist">
-              <tr>
-                <th className="px-4 py-3">Name</th>
-                <th className="px-4 py-3">Last modified</th>
-                <th className="px-4 py-3">Size</th>
-                <th className="px-4 py-3">Workflow</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3">Action</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {currentPrefix ? (
-                <tr className="cursor-pointer transition hover:bg-slate-50" onClick={() => loadDirectory(parentPrefix(currentPrefix))}>
-                  <td className="px-4 py-3 font-semibold text-brandDeep">[..]</td>
-                  <td className="px-4 py-3" />
-                  <td className="px-4 py-3" />
-                  <td className="px-4 py-3" />
-                  <td className="px-4 py-3" />
-                  <td className="px-4 py-3" />
-                </tr>
-              ) : null}
-
-              {rows.map((row) => (
-                <tr key={`${row.kind}-${row.fullPath}`} className="cursor-pointer transition hover:bg-slate-50">
-                  <td
-                    className="px-4 py-3 font-medium text-ink"
-                    onClick={row.kind === 'folder' ? () => loadDirectory(row.fullPath) : () => openFile(row.fullPath)}
-                  >
-                    {row.kind === 'folder' ? `📁 ${row.name}` : row.name}
-                  </td>
-                  <td className="px-4 py-3 text-mist">{row.lastModified}</td>
-  
-                  <td className="px-4 py-3 text-mist">{row.size}</td>
-                  <td className="px-4 py-3 text-mist">
-                    {row.kind === 'folder' && canSelectWorkflowForFolder(row.fullPath)
-                      ? row.workflowName
-                        ? `${row.workflowName}${row.selectedByUsername ? ` (${row.selectedByUsername})` : ''}`
-                        : 'Not selected'
-                      : ''}
-                  </td>
-                  <td className="px-4 py-3">
-                    {row.kind === 'folder' && canSelectWorkflowForFolder(row.fullPath) && row.workflowName ? (
-                      authState.user?.userType === 'admin' ? (
-                        <button
-                          type="button"
-                          disabled={togglingStatus[row.fullPath]}
-                          onClick={() => toggleFolderStatus(row)}
-                          className={
-                            row.status === 'complete'
-                              ? 'inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 px-3 py-1.5 text-sm font-semibold text-emerald-700 border border-emerald-200 transition hover:bg-emerald-100 disabled:opacity-50'
-                              : 'inline-flex items-center gap-1.5 rounded-xl bg-amber-50 px-3 py-1.5 text-sm font-semibold text-amber-700 border border-amber-200 transition hover:bg-amber-100 disabled:opacity-50'
-                          }
-                        >
-                          {row.status === 'complete' ? (
-                            <span className="inline-block h-2 w-2 rounded-full bg-emerald-400" />
-                          ) : (
-                            <span className="inline-block h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
-                          )}
-                          {togglingStatus[row.fullPath] ? 'Saving...' : row.status === 'complete' ? 'Complete' : 'Processing'}
-                        </button>
-                      ) : (
-                        <span
-                          className={
-                            row.status === 'complete'
-                              ? 'inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 px-3 py-1.5 text-sm font-semibold text-emerald-700 border border-emerald-200'
-                              : 'inline-flex items-center gap-1.5 rounded-xl bg-amber-50 px-3 py-1.5 text-sm font-semibold text-amber-700 border border-amber-200'
-                          }
-                        >
-                          {row.status === 'complete' ? (
-                            <span className="inline-block h-2 w-2 rounded-full bg-emerald-400" />
-                          ) : (
-                            <span className="inline-block h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
-                          )}
-                          {row.status === 'complete' ? 'Complete' : 'Processing'}
-                        </span>
-                      )
-                    ) : (
-                      ''
-                    )}
-                  </td>
-                  <td className="px-4 py-3">
-                    {row.kind === 'folder' && canSelectWorkflowForFolder(row.fullPath) ? (
-                      row.workflowName && authState.user?.userType !== 'admin' ? (
-                        ''
-                      ) : (
-                        <button
-                          type="button"
-                          className="h-10 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink transition hover:bg-slate-50"
-                          onClick={() =>
-                            setWorkflowModal({
-                              open: true,
-                              folderName: row.fullPath,
-                              workflowId: WORKFLOWS.find((workflow) => workflow.label === row.workflowName)?.id || 'none'
-                            })
-                          }
-                        >
-                          {row.workflowName ? 'Change workflow' : 'Select workflow'}
-                        </button>
-                      )
-                    ) : (
-                      ''
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="mb-5 flex flex-wrap gap-3">
+          <button
+            className="flex min-h-20 min-w-[150px] flex-col items-center justify-center gap-1 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium text-ink transition hover:bg-slate-100"
+            type="button"
+            onClick={() => document.getElementById('file-upload-picker')?.click()}
+          >
+            <span className="text-3xl leading-none text-slate-700">+</span>
+            <span className="text-sm">Upload</span>
+          </button>
+          <button
+            className="flex min-h-20 min-w-[150px] flex-col items-center justify-center gap-1 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium text-ink transition hover:bg-slate-100"
+            type="button"
+            onClick={() => {
+              setFolderName('');
+              setShowFolderModal(true);
+            }}
+          >
+            <span className="text-3xl leading-none text-slate-700">+</span>
+            <span className="text-center text-sm">Add a directory</span>
+          </button>
         </div>
-      </div>
 
-      {preview.open ? (
-        <section className="mt-5 overflow-hidden rounded-3xl border border-slate-200 bg-white">
-          <div className="flex items-center justify-between gap-3 border-b border-slate-200 bg-slate-50 px-4 py-3">
-            <div>
-              <strong>{baseName(preview.name)}</strong>
-              <div className="mt-1 text-xs text-mist">{preview.meta}</div>
-            </div>
+        <input
+          id="file-upload-picker"
+          type="file"
+          multiple
+          hidden
+          onChange={(e) => setFilesToUpload(Array.from(e.target.files || []))}
+        />
+
+        {filesToUpload.length ? (
+          <div className="mb-4 flex min-h-[42px] items-center gap-3 max-md:flex-col max-md:items-stretch">
+            <span className="flex min-h-[42px] flex-1 items-center rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm text-mist">
+              {filesToUpload.length === 1 ? filesToUpload[0].name : `${filesToUpload.length} files selected`}
+            </span>
             <button
-              className="h-10 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink transition hover:bg-slate-50"
-              onClick={() => setPreview({ open: false, name: '', content: '', meta: '', note: '' })}
+              className="h-10 rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+              type="button"
+              onClick={uploadFiles}
+              disabled={uploading}
             >
-              Close
+              {uploading ? 'Uploading...' : `Upload ${filesToUpload.length}`}
             </button>
           </div>
-          {preview.note ? <p className="mx-4 my-3 text-sm text-mist">{preview.note}</p> : null}
-          <pre className="m-0 max-h-[420px] overflow-auto border-t border-slate-200 bg-slate-50 p-4 text-xs leading-6 text-slate-700">
-            {preview.content}
-          </pre>
-        </section>
-      ) : null}
+        ) : null}
 
-      {showFolderModal ? (
-        <div className="fixed inset-0 flex items-center justify-center bg-slate-950/40 p-4" onClick={() => !creatingFolder && setShowFolderModal(false)}>
-          <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
-            <h2 className="m-0 text-2xl font-bold text-ink">Add a directory</h2>
-            <p className="mb-4 mt-2 text-sm text-mist">Enter the name for the new folder in the current location.</p>
-            <input
-              className="mb-4 h-11 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-base outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
-              autoFocus
-              value={folderName}
-              onChange={(e) => setFolderName(e.target.value)}
-              placeholder="Folder name"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && folderName.trim() && !creatingFolder) {
-                  createFolder();
-                }
-                if (e.key === 'Escape' && !creatingFolder) {
-                  setShowFolderModal(false);
-                }
-              }}
-            />
-            <div className="flex justify-end gap-3">
-              <button
-                type="button"
-                className="h-10 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                onClick={() => setShowFolderModal(false)}
-                disabled={creatingFolder}
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                className="h-10 rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
-                onClick={createFolder}
-                disabled={!folderName.trim() || creatingFolder}
-              >
-                {creatingFolder ? 'Creating...' : 'Create'}
-              </button>
-            </div>
+        {uploadStats.length ? (
+          <div className="mb-3">
+            {uploadStats.map((item) => (
+              <div key={item.id} className="mb-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                <div className="mb-2 flex justify-between gap-3 text-sm">
+                  <span className="break-words font-semibold text-ink">{item.name}</span>
+                  <span
+                    className={`capitalize ${item.status === 'done' ? 'text-emerald-700' : item.status === 'error' ? 'text-red-600' : 'text-slate-500'
+                      }`}
+                  >
+                    {item.status}
+                  </span>
+                </div>
+                <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-200">
+                  <div
+                    className="h-full bg-slate-900 transition-all"
+                    style={{ width: `${Math.min(item.progress, 100)}%` }}
+                  />
+                </div>
+                <div className="mt-2 flex flex-wrap gap-3 text-xs text-mist">
+                  <span>{Math.round(item.progress)}%</span>
+                  <span>{formatSize(item.loaded)} / {formatSize(item.total)}</span>
+                  <span>{formatSize(item.speed)}/s</span>
+                  <span>{formatDuration(item.elapsedMs)}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : null}
+
+        <div className="mb-4 flex items-center gap-3">
+          <input
+            className="h-11 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-base text-ink outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search blobs by prefix (case-sensitive)"
+          />
+        </div>
+
+        <p className="mb-3 text-sm text-mist">Showing {rows.length} item(s)</p>
+
+        <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white">
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-full border-collapse text-left text-sm">
+              <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-[0.08em] text-mist">
+                <tr>
+                  <th className="px-4 py-3">Name</th>
+                  <th className="px-4 py-3">Last modified</th>
+                  <th className="px-4 py-3">Size</th>
+                  <th className="px-4 py-3">Workflow</th>
+                  <th className="px-4 py-3">Status</th>
+                  <th className="px-4 py-3">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {currentPrefix ? (
+                  <tr className="cursor-pointer transition hover:bg-slate-50" onClick={() => loadDirectory(parentPrefix(currentPrefix))}>
+                    <td className="px-4 py-3 font-semibold text-brandDeep">[..]</td>
+                    <td className="px-4 py-3" />
+                    <td className="px-4 py-3" />
+                    <td className="px-4 py-3" />
+                    <td className="px-4 py-3" />
+                    <td className="px-4 py-3" />
+                  </tr>
+                ) : null}
+
+                {rows.map((row) => (
+                  <tr key={`${row.kind}-${row.fullPath}`} className="cursor-pointer transition hover:bg-slate-50">
+                    <td
+                      className="px-4 py-3 font-medium text-ink"
+                      onClick={row.kind === 'folder' ? () => loadDirectory(row.fullPath) : () => openFile(row.fullPath)}
+                    >
+                      {row.kind === 'folder' ? `📁 ${row.name}` : row.name}
+                    </td>
+                    <td className="px-4 py-3 text-mist">{row.lastModified}</td>
+
+                    <td className="px-4 py-3 text-mist">{row.size}</td>
+                    <td className="px-4 py-3 text-mist">
+                      {row.kind === 'folder' &&
+                        canSelectWorkflowForFolder(row.fullPath) &&
+                        row.workflowName}
+                    </td>
+                    <td className="px-4 py-3">
+                      {row.kind === 'folder' && canSelectWorkflowForFolder(row.fullPath) && row.workflowName ? (
+                        authState.user?.userType === 'admin' ? (
+                          <button
+                            type="button"
+                            disabled={togglingStatus[row.fullPath]}
+                            onClick={() => toggleFolderStatus(row)}
+                            className={
+                              row.status === 'complete'
+                                ? 'inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 px-3 py-1.5 text-sm font-semibold text-emerald-700 border border-emerald-200 transition hover:bg-emerald-100 disabled:opacity-50'
+                                : 'inline-flex items-center gap-1.5 rounded-xl bg-amber-50 px-3 py-1.5 text-sm font-semibold text-amber-700 border border-amber-200 transition hover:bg-amber-100 disabled:opacity-50'
+                            }
+                          >
+                            {row.status === 'complete' ? (
+                              <span className="inline-block h-2 w-2 rounded-full bg-emerald-400" />
+                            ) : (
+                              <span className="inline-block h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
+                            )}
+                            {togglingStatus[row.fullPath] ? 'Saving...' : row.status === 'complete' ? 'Complete' : 'Processing'}
+                          </button>
+                        ) : (
+                          <span
+                            className={
+                              row.status === 'complete'
+                                ? 'inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 px-3 py-1.5 text-sm font-semibold text-emerald-700 border border-emerald-200'
+                                : 'inline-flex items-center gap-1.5 rounded-xl bg-amber-50 px-3 py-1.5 text-sm font-semibold text-amber-700 border border-amber-200'
+                            }
+                          >
+                            {row.status === 'complete' ? (
+                              <span className="inline-block h-2 w-2 rounded-full bg-emerald-400" />
+                            ) : (
+                              <span className="inline-block h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
+                            )}
+                            {row.status === 'complete' ? 'Complete' : 'Processing'}
+                          </span>
+                        )
+                      ) : (
+                        ''
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      {row.kind === 'folder' && canSelectWorkflowForFolder(row.fullPath) ? (
+                        row.workflowName && authState.user?.userType !== 'admin' ? (
+                          ''
+                        ) : (
+                          <button
+                            type="button"
+                            className="h-10 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink transition hover:bg-slate-50"
+                            onClick={() =>
+                              setWorkflowModal({
+                                open: true,
+                                folderName: row.fullPath,
+                                workflowId: WORKFLOWS.find((workflow) => workflow.label === row.workflowName)?.id || 'none'
+                              })
+                            }
+                          >
+                            {row.workflowName ? 'Change workflow' : 'Select workflow'}
+                          </button>
+                        )
+                      ) : (
+                        ''
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
-      ) : null}
 
-      {workflowModal.open ? (
-        <div className="fixed inset-0 flex items-center justify-center bg-slate-950/40 p-4" onClick={() => !savingWorkflow && setWorkflowModal({ open: false, folderName: '', workflowId: 'none' })}>
-          <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
-            <h2 className="m-0 text-2xl font-bold text-ink">Select workflow</h2>
-            <p className="mb-4 mt-2 text-sm text-mist">{baseName(workflowModal.folderName)}</p>
-            <select
-              className="mb-4 h-11 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-base outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
-              value={workflowModal.workflowId}
-              onChange={(e) => setWorkflowModal((current) => ({ ...current, workflowId: e.target.value }))}
-            >
-              {WORKFLOWS.map((workflow) => (
-                <option key={workflow.id} value={workflow.id}>
-                  {workflow.label}
-                </option>
-              ))}
-            </select>
-            <div className="flex justify-end gap-3">
+        {preview.open ? (
+          <section className="mt-5 overflow-hidden rounded-3xl border border-slate-200 bg-white">
+            <div className="flex items-center justify-between gap-3 border-b border-slate-200 bg-slate-50 px-4 py-3">
+              <div>
+                <strong>{baseName(preview.name)}</strong>
+                <div className="mt-1 text-xs text-mist">{preview.meta}</div>
+              </div>
               <button
-                type="button"
-                className="h-10 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                onClick={() => setWorkflowModal({ open: false, folderName: '', workflowId: 'none' })}
-                disabled={savingWorkflow}
+                className="h-10 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink transition hover:bg-slate-50"
+                onClick={() => setPreview({ open: false, name: '', content: '', meta: '', note: '' })}
               >
-                Cancel
-              </button>
-              <button
-                type="button"
-                className="h-10 rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
-                onClick={saveWorkflowSelection}
-                disabled={savingWorkflow}
-              >
-                {savingWorkflow ? 'Saving...' : 'Save'}
+                Close
               </button>
             </div>
-          </div>
-        </div>
-      ) : null}
+            {preview.note ? <p className="mx-4 my-3 text-sm text-mist">{preview.note}</p> : null}
+            <pre className="m-0 max-h-[420px] overflow-auto border-t border-slate-200 bg-slate-50 p-4 text-xs leading-6 text-slate-700">
+              {preview.content}
+            </pre>
+          </section>
+        ) : null}
 
-      <p className={statusClasses}>{status.text}</p>
+        {showFolderModal ? (
+          <div className="fixed inset-0 flex items-center justify-center bg-slate-950/40 p-4" onClick={() => !creatingFolder && setShowFolderModal(false)}>
+            <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
+              <h2 className="m-0 text-2xl font-bold text-ink">Add a directory</h2>
+              <p className="mb-4 mt-2 text-sm text-mist">Enter the name for the new folder in the current location.</p>
+              <input
+                className="mb-4 h-11 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-base outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
+                autoFocus
+                value={folderName}
+                onChange={(e) => setFolderName(e.target.value)}
+                placeholder="Folder name"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && folderName.trim() && !creatingFolder) {
+                    createFolder();
+                  }
+                  if (e.key === 'Escape' && !creatingFolder) {
+                    setShowFolderModal(false);
+                  }
+                }}
+              />
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  className="h-10 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                  onClick={() => setShowFolderModal(false)}
+                  disabled={creatingFolder}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="h-10 rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+                  onClick={createFolder}
+                  disabled={!folderName.trim() || creatingFolder}
+                >
+                  {creatingFolder ? 'Creating...' : 'Create'}
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : null}
+
+        {workflowModal.open ? (
+          <div className="fixed inset-0 flex items-center justify-center bg-slate-950/40 p-4" onClick={() => !savingWorkflow && setWorkflowModal({ open: false, folderName: '', workflowId: 'none' })}>
+            <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
+              <h2 className="m-0 text-2xl font-bold text-ink">Select workflow</h2>
+              <p className="mb-4 mt-2 text-sm text-mist">{baseName(workflowModal.folderName)}</p>
+              <select
+                className="mb-4 h-11 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-base outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
+                value={workflowModal.workflowId}
+                onChange={(e) => setWorkflowModal((current) => ({ ...current, workflowId: e.target.value }))}
+              >
+                {WORKFLOWS.map((workflow) => (
+                  <option key={workflow.id} value={workflow.id}>
+                    {workflow.label}
+                  </option>
+                ))}
+              </select>
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  className="h-10 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                  onClick={() => setWorkflowModal({ open: false, folderName: '', workflowId: 'none' })}
+                  disabled={savingWorkflow}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="h-10 rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+                  onClick={saveWorkflowSelection}
+                  disabled={savingWorkflow}
+                >
+                  {savingWorkflow ? 'Saving...' : 'Save'}
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : null}
+
+        <p className={statusClasses}>{status.text}</p>
       </div>
     </main>
   );
