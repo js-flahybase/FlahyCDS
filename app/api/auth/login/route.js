@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { buildSession, recordLoginEvent, setSessionCookie, verifyPassword } from '../../../../lib/auth';
+import { buildSession, setSessionCookie, verifyPassword } from '../../../../lib/auth';
 import { query } from '../../../../lib/db';
 
 export async function POST(request) {
@@ -23,22 +23,17 @@ export async function POST(request) {
 
     const user = result.rows[0];
     if (!user) {
-      await recordLoginEvent(null, username, false, request, 'Unknown username');
       return NextResponse.json({ error: 'Invalid username or password' }, { status: 401 });
     }
 
     if (!user.is_active) {
-      await recordLoginEvent(user.id, username, false, request, 'Inactive user');
       return NextResponse.json({ error: 'User is inactive' }, { status: 403 });
     }
 
     const passwordOk = verifyPassword(password, user.password_salt, user.password_hash);
     if (!passwordOk) {
-      await recordLoginEvent(user.id, username, false, request, 'Incorrect password');
       return NextResponse.json({ error: 'Invalid username or password' }, { status: 401 });
     }
-
-    await recordLoginEvent(user.id, username, true, request, 'Login successful');
 
     const response = NextResponse.json({
       ok: true,
