@@ -258,6 +258,9 @@ export async function POST(request) {
       [folderPrefix, auth.session.userId, auth.session.username]
     );
 
+    const markerClient = containerClient.getBlockBlobClient(`${folderPrefix}${FOLDER_MARKER_NAME}`);
+    await markerClient.upload('', 0, { blobHTTPHeaders: { blobContentType: 'application/octet-stream' } });
+
     return NextResponse.json({
       message: 'Folder created',
       folder: folderPrefix
