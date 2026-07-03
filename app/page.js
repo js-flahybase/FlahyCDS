@@ -35,11 +35,8 @@ function formatDuration(milliseconds) {
 }
 
 function canSelectWorkflowForFolder(folderPath) {
-  const parts = String(folderPath || '')
-    .split('/')
-    .filter(Boolean);
-
-  return parts.length === 4 && parts[1] === 'raw_reads';
+  const parts = String(folderPath || '').split('/').filter(Boolean);
+  return parts.length === 4 && /^raw[\s_-]?reads?$/i.test(parts[1]);
 }
 
 const MAX_PARALLEL_UPLOADS = 3;

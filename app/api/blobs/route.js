@@ -11,11 +11,8 @@ function normalizePrefix(prefix) {
 }
 
 function canAssignWorkflowToFolder(folderPath) {
-  const parts = String(folderPath || '')
-    .split('/')
-    .filter(Boolean);
-
-  return parts.length === 4 && parts[1] === 'raw_reads';
+  const parts = String(folderPath || '').split('/').filter(Boolean);
+  return parts.length === 4 && /^raw[\s_-]?reads?$/i.test(parts[1]);
 }
 
 async function ensureFolderRegistry() {
