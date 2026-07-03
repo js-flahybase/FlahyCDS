@@ -574,11 +574,25 @@ export default function Home() {
 
                 {rows.map((row) => (
                   <tr key={`${row.kind}-${row.fullPath}`} className="cursor-pointer transition hover:bg-slate-50">
-                    <td
-                      className="px-4 py-3 font-medium text-ink"
-                      onClick={row.kind === 'folder' ? () => loadDirectory(row.fullPath) : () => openFile(row.fullPath)}
-                    >
-                      {row.kind === 'folder' ? `📁 ${row.name}` : row.name}
+                    <td className="px-4 py-3 font-medium text-ink">
+                      <div className="flex items-center gap-3">
+                        <span
+                          className="cursor-pointer hover:underline"
+                          onClick={row.kind === 'folder' ? () => loadDirectory(row.fullPath) : () => openFile(row.fullPath)}
+                        >
+                          {row.kind === 'folder' ? `📁 ${row.name}` : row.name}
+                        </span>
+                        {row.kind === 'file' && (
+                          <a
+                            href={`/api/blob-download?name=${encodeURIComponent(row.fullPath)}`}
+                            download={row.name}
+                            className="shrink-0 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-600 transition hover:bg-slate-50"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            Download
+                          </a>
+                        )}
+                      </div>
                     </td>
                     <td className="px-4 py-3 text-mist">{row.lastModified}</td>
 
