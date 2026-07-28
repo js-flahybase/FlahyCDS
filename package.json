@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "script:create-user": "node --env-file=.env ./scripts/create-user.mjs",
-    "script:grant-folder": "node --env-file=.env ./scripts/grant-folder-permission.mjs"
+    "script:grant-folder": "node --env-file=.env ./scripts/grant-folder-permission.mjs",
+    "script:update-password": "node --env-file=.env ./scripts/update-password.mjs"
   },
   "dependencies": {
     "@azure/identity": "^4.11.0",
