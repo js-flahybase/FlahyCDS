@@ -6,6 +6,10 @@
 - Grants a user access to a blob folder prefix in `folder_permissions`.
 - Usage: `npm run script:grant-folder -- --username alice --folder clients/raw_reads/batch-001/sample-a`
 
+`scripts/update-password.mjs`
+- update password for existing user
+- Usage: `npm run script:update-password -- --username youruser --password yournewpassword`
+
 Notes
 - These commands expect the app `.env` file to contain the database settings and `APP_SESSION_SECRET`.
 - `--folder` is normalized to end with `/` automatically.
