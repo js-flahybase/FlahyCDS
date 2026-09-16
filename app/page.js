@@ -59,6 +59,7 @@ export default function Home() {
   const [savingWorkflow, setSavingWorkflow] = useState(false);
   const [togglingStatus, setTogglingStatus] = useState({});
   const [status, setStatus] = useState({ text: '', error: false });
+  const [errorPopup, setErrorPopup] = useState({ open: false, message: '' });
   const [preview, setPreview] = useState({ open: false, name: '', content: '', meta: '', note: '' });
   const statusClasses = status.error
     ? 'mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700'
@@ -305,7 +306,7 @@ export default function Home() {
       });
       setWorkflowModal({ open: false, folderName: '', workflowId: 'none' });
     } catch (error) {
-      setStatus({ text: error.message, error: true });
+      setErrorPopup({ open: true, message: error.message });
     } finally {
       setSavingWorkflow(false);
     }
@@ -767,6 +768,24 @@ export default function Home() {
                   disabled={savingWorkflow}
                 >
                   {savingWorkflow ? 'Saving...' : 'Save'}
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : null}
+
+        {errorPopup.open ? (
+          <div className="fixed inset-0 flex items-center justify-center bg-slate-950/40 p-4" onClick={() => setErrorPopup({ open: false, message: '' })}>
+            <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
+              <h2 className="m-0 text-2xl font-bold text-ink">Cannot run workflow</h2>
+              <p className="mb-4 mt-2 text-sm text-mist">{errorPopup.message}</p>
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  className="h-10 rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white transition hover:bg-slate-800"
+                  onClick={() => setErrorPopup({ open: false, message: '' })}
+                >
+                  OK
                 </button>
               </div>
             </div>

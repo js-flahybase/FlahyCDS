@@ -72,6 +72,18 @@ function filterFoldersBySearch(folders, prefix, folderSearch) {
   });
 }
 
+const FLAHY_LIFE_REQUIRED_FILE = 'blood_panel.csv';
+
+async function folderHasFileMatching(containerClient, folderPrefix, suffix) {
+  for await (const item of containerClient.listBlobsFlat({ prefix: folderPrefix })) {
+    const name = item.name.slice(folderPrefix.length).replace(/\/$/, '');
+    if (name.toLowerCase().endsWith(suffix.toLowerCase())) {
+      return true;
+    }
+  }
+  return false;
+}
+
 async function folderExists(containerClient, folderPrefix) {
   await ensureFolderRegistry();
 
@@ -341,6 +353,18 @@ export async function PATCH(request) {
     }
 
     const workflowName = WORKFLOWS.find((workflow) => workflow.id === workflowId)?.label || '';
+
+    if (workflowId === 'FlahyLife') {
+      const containerClient = getContainerClient();
+      const folderPrefix = normalizePrefix(name);
+      const hasBloodPanel = await folderHasFileMatching(containerClient, folderPrefix, FLAHY_LIFE_REQUIRED_FILE);
+      if (!hasBloodPanel) {
+        return NextResponse.json(
+          { error: `${FLAHY_LIFE_REQUIRED_FILE} missing`, missingFile: FLAHY_LIFE_REQUIRED_FILE },
+          { status: 400 }
+        );
+      }
+    }
 
     if (workflowId === 'none') {
       await query('delete from folder_workflows where folder_path = $1', [normalizePrefix(name)]);
