@@ -59,6 +59,7 @@ export default function Home() {
   const [savingWorkflow, setSavingWorkflow] = useState(false);
   const [togglingStatus, setTogglingStatus] = useState({});
   const [status, setStatus] = useState({ text: '', error: false });
+  const [workflowMenuOpen, setWorkflowMenuOpen] = useState(false);
   const [errorPopup, setErrorPopup] = useState({ open: false, message: '' });
   const [preview, setPreview] = useState({ open: false, name: '', content: '', meta: '', note: '' });
   const statusClasses = status.error
@@ -651,13 +652,14 @@ export default function Home() {
                           <button
                             type="button"
                             className="h-10 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink transition hover:bg-slate-50"
-                            onClick={() =>
+                            onClick={() => {
+                              setWorkflowMenuOpen(false);
                               setWorkflowModal({
                                 open: true,
                                 folderName: row.fullPath,
                                 workflowId: WORKFLOWS.find((workflow) => workflow.label === row.workflowName)?.id || 'none'
-                              })
-                            }
+                              });
+                            }}
                           >
                             {row.workflowName ? 'Change workflow' : 'Select workflow'}
                           </button>
@@ -741,17 +743,36 @@ export default function Home() {
             <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
               <h2 className="m-0 text-2xl font-bold text-ink">Select workflow</h2>
               <p className="mb-4 mt-2 text-sm text-mist">{baseName(workflowModal.folderName)}</p>
-              <select
-                className="mb-4 h-11 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-base outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
-                value={workflowModal.workflowId}
-                onChange={(e) => setWorkflowModal((current) => ({ ...current, workflowId: e.target.value }))}
-              >
-                {WORKFLOWS.map((workflow) => (
-                  <option key={workflow.id} value={workflow.id}>
-                    {workflow.label}
-                  </option>
-                ))}
-              </select>
+              <div className="relative mb-4">
+                <button
+                  type="button"
+                  className="flex h-11 w-full items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 text-left text-base outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
+                  onClick={() => setWorkflowMenuOpen((open) => !open)}
+                >
+                  <span>{WORKFLOWS.find((w) => w.id === workflowModal.workflowId)?.label}</span>
+                  <span className="text-xs text-slate-500">▾</span>
+                </button>
+                {workflowMenuOpen ? (
+                  <ul className="absolute z-30 mt-1 max-h-64 w-full overflow-auto rounded-2xl border border-slate-200 bg-white py-1 shadow-lg">
+                    {WORKFLOWS.map((workflow) => {
+                      const selected = workflow.id === workflowModal.workflowId;
+                      return (
+                        <li
+                          key={workflow.id}
+                          className="flex cursor-pointer items-center gap-2 px-4 py-2 text-base hover:bg-slate-100"
+                          onClick={() => {
+                            setWorkflowModal((current) => ({ ...current, workflowId: workflow.id }));
+                            setWorkflowMenuOpen(false);
+                          }}
+                        >
+                          <span className="w-4 text-sm">{selected && workflow.id !== 'none' ? '✓' : ''}</span>
+                          {workflow.label}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                ) : null}
+              </div>
               <div className="flex justify-end gap-3">
                 <button
                   type="button"
